@@ -50,10 +50,14 @@ const BEFORE = new Date('2025-09-01');
 const AFTER = new Date('2026-04-01');
 
 async function main() {
-  // Order matters: fares point at routes, routes point at stops.
-  await db.fare.deleteMany();
-  await db.route.deleteMany();
-  await db.stop.deleteMany();
+  // TRUNCATE rather than deleteMany, and RESTART IDENTITY so the ids are the
+  // same every time. deleteMany leaves the sequence where it was, so a second
+  // seed would start stops at 13 — and every "?from=1&to=8" in the labs would
+  // stop working. CASCADE handles the order: fares point at routes, routes
+  // point at stops.
+  await db.$executeRawUnsafe(
+    'TRUNCATE TABLE fares, routes, stops RESTART IDENTITY CASCADE'
+  );
 
   await db.stop.createMany({ data: STOPS });
   const stops = await db.stop.findMany();
