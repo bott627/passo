@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { db } from './db.js';
 import stops from './routes/stops.js';
 import fares from './routes/fares.js';
+import auth from './routes/auth.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const webDir = path.join(here, '..', 'web');
@@ -24,6 +25,7 @@ app.get('/api/health', async (_req, res) => {
 
 app.use('/api/stops', stops);
 app.use('/api/fares', fares);
+app.use('/api', auth);
 
 // The web app is served by this same server, so it shares an origin with the
 // API. That means no CORS to configure, and the login cookie in Lab C simply

@@ -1,5 +1,9 @@
 import { Router } from 'express';
 import { db } from '../db.js';
+<<<<<<< Updated upstream
+=======
+import { requireLogin } from '../auth/session.js';
+>>>>>>> Stashed changes
 
 const router = Router();
 
@@ -90,7 +94,11 @@ function validateFare(body) {
 }
 
 // POST /api/fares
+<<<<<<< Updated upstream
 router.post('/', async (req, res) => {
+=======
+router.post('/', requireLogin, async (req, res) => {
+>>>>>>> Stashed changes
   const { problems, from, to, amountDalasi, effectiveFrom, source } = validateFare(
     req.body ?? {}
   );
