@@ -48,4 +48,23 @@ router.get('/', async (req, res) => {
   });
 });
 
+// DEMO ONLY — this branch exists to be attacked. Never merge it into main.
+router.get('/unsafe-search', async (req, res) => {
+  const name = req.query.name ?? '';
+  const rows = await db.$queryRawUnsafe(
+    `SELECT id, name, region FROM stops WHERE name = '${name}'`
+  );
+  res.json(rows);
+});
+
+// The same query, written safely. A tagged template sends the value as a
+// value, so it can never be read as part of the sentence.
+router.get('/safe-search', async (req, res) => {
+  const name = req.query.name ?? '';
+  const rows = await db.$queryRaw`
+    SELECT id, name, region FROM stops WHERE name = ${name}
+  `;
+  res.json(rows);
+});
+
 export default router;
