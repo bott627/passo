@@ -77,3 +77,16 @@ one command:
 ```bash
 git checkout checkpoint/lab-a-done
 ```
+
+### `demo/injection` — never merge this
+
+There is one more branch, and it is deliberately broken. `demo/injection`
+carries a stop search built by gluing user input into SQL, so the Lab B
+briefing can show an injection working against a real database.
+
+**It must never be merged into `main`, and no pull request should be opened
+from it.** It exists to be attacked. If you protect one branch in this
+repository, protect against this.
+
+The safe version of the same query sits beside it on that branch, so the
+difference can be shown in one file.
