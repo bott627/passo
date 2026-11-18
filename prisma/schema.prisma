@@ -1,0 +1,65 @@
+// A fare is not one number. It is a number that was true from a certain date.
+// That is why `fares` is a list of rows per route, not a column on `routes`.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Stop {
+  id     Int    @id @default(autoincrement())
+  name   String
+  region String
+
+  originOf      Route[] @relation("origin")
+  destinationOf Route[] @relation("destination")
+
+  @@map("stops")
+}
+
+model Route {
+  id            Int    @id @default(autoincrement())
+  originId      Int    @map("origin_id")
+  destinationId Int    @map("destination_id")
+  // van, taxi or bus
+  vehicleType   String @map("vehicle_type")
+
+  origin      Stop   @relation("origin", fields: [originId], references: [id])
+  destination Stop   @relation("destination", fields: [destinationId], references: [id])
+  fares       Fare[]
+
+  // A route runs one way: Westfield to Brikama is not Brikama to Westfield.
+  @@unique([originId, destinationId, vehicleType])
+  @@map("routes")
+}
+
+model Fare {
+  id            Int      @id @default(autoincrement())
+  routeId       Int      @map("route_id")
+  // Whole dalasi. Nobody charges a butut.
+  amountDalasi  Int      @map("amount_dalasi")
+  effectiveFrom DateTime @map("effective_from") @db.Date
+  source        String?
+  // "sample" for seeded figures, "verified" for a fare someone actually paid.
+  status        String   @default("sample")
+
+  route Route @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+  // The lookup is always "latest effective_from, not in the future".
+  @@index([routeId, effectiveFrom])
+  @@map("fares")
+}
+
+// Created now so there is one database push, but unused until Lab C.
+model User {
+  id           Int    @id @default(autoincrement())
+  username     String @unique
+  passwordHash String @map("password_hash")
+  role         String @default("fare_officer")
+
+  @@map("users")
+}

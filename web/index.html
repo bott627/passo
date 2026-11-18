@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Passo — what does the trip cost?</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Passo</h1>
+      <p class="lede">What does the trip cost today?</p>
+
+      <form id="search">
+        <div class="field">
+          <label for="from">From</label>
+          <select id="from" name="from" required></select>
+        </div>
+
+        <div class="field">
+          <label for="to">To</label>
+          <select id="to" name="to" required></select>
+        </div>
+
+        <button type="submit">Find the fare</button>
+      </form>
+
+      <output id="result" aria-live="polite"></output>
+
+      <p class="note">
+        Fares marked <strong>sample</strong> are plausible guesses used for
+        teaching. They are not an official tariff.
+      </p>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
